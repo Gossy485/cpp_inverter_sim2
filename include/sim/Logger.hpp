@@ -1,7 +1,9 @@
 #pragma once
+
 #include <fstream>
 #include <string>
-#include "Vec.hpp"
+
+#include "control/Vec.hpp"
 
 namespace olinv {
 
@@ -13,6 +15,7 @@ public:
     void write_header();
 
     void log(double t,
+             double omega_ref,
              const Vec2& i_dq_ref,
              const Vec2& i_dq,
              const Vec3& i_abc,
@@ -27,4 +30,4 @@ private:
     std::ofstream ofs_;
 };
 
-} // namespace olinv
+}  // namespace olinv
