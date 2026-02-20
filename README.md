@@ -1,17 +1,47 @@
-# Open-loop inverter + dq motor model + FOC transforms + dq current PI (simulation)
+# C++ Inverter + PMSM Simulation
 
-Minimal C++ simulation of:
-- Clarke/Park transforms (FOC)
-- dq PI current controller with decoupling/feedforward
-- PMSM dq electrical + mechanical model (RK4 integration)
-- Average-value 3-phase inverter (floating neutral)
-- SPWM duty computation (equivalent to comparing sine vs triangle)
-- Multi-rate loop: control/PWM at 20 kHz, motor integration with substeps
-- CSV logging + Python plotting script
+A compact field-oriented control simulation with:
+- PMSM electrical/mechanical model (RK4 integration)
+- Cascaded closed-loop controllers
+  - outer speed PI loop (`omega -> iq_ref`)
+  - inner current PI loop (`id/iq -> vd/vq`) with decoupling terms
+- Clarke/Park transforms
+- Inverter average model + SPWM duty generation
+- Speed reference is automatically clipped to a voltage-feasible maximum based on `Vdc`, `psi_f`, and pole pairs
+- Multi-rate simulation (control tick + motor integration substeps)
+- CSV logging and Python plotting helper
 
-## Build
+## Project layout
+
+```text
+include/
+  control/
+    CurrentController.hpp
+    PIController.hpp
+    SpeedController.hpp
+    SPWM.hpp
+    Transforms.hpp
+    Vec.hpp
+  plant/
+    InverterModel.hpp
+    PMSMModel.hpp
+  sim/
+    Logger.hpp
+    Sim.hpp
+src/
+  control/
+  plant/
+  sim/
+```
+
+## Build and run
+
 ```bash
 mkdir -p build
 cd build
 cmake ..
-cmake --build . -j# cpp_inverter_sim
+cmake --build . -j
+./inverter_sim
+```
+
+The simulation writes CSV data to `results/results.csv` (as configured in `src/main.cpp`).
